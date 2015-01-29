@@ -1,7 +1,6 @@
 #@author Martin Becker
 require 'sinatra'
 require 'sinatra/form_helpers'
-require "sinatra/namespace"
 require 'sinatra/assetpack'
 require 'yui/compressor'
 require 'sass'

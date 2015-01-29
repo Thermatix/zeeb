@@ -1,11 +1,13 @@
 module Zeeb	
 	module Base
 		class Info
-			include Register_Self
-    		register_component :info
+			if defined? Register_Self
+				include Register_Self 
+	    		register_component :info
+	    	end
     		
 			module Singleton_Methods
-				include Utils
+				include Utils if defined? Utils 
 								
 				def [](key)
 					@store[key]

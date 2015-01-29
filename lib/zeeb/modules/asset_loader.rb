@@ -2,20 +2,43 @@ module Zeeb
 	module Asset_Loader
 		module Singleton_Methods
 
-			def setup_asset_loader
-				assets do		  		
-			  		serve '/js', from: "#{Info[:assets]}/javascripts"
-			  		serve '/css', from: "#{Info[:assets]}/css"
-			  		serve '/images', from: "#{Info[:assets]}/images"
+			def setup_asset_loader locations, frames
 
-			  		js :main, [
-			  			"/js/vendor/jquery-1.11.2.min.js",
-			  			"/js/main.js"
-			  		]
+				main_css = []
+				main_js = []
 
-			  		css :main, [
-			  			"/css/main.css"
-			  		]
+				zeeb_js = "#{Info[:zeeb_root]}/assets/js"
+				zeeb_css = "#{Info[:zeeb_root]}/assets/css"
+				zeeb_font = "#{Info[:zeeb_root]}/assets/fonts"
+
+				zcss = '/zcss'
+				zjs = '/zjs'
+				zfont = '/zfont'
+
+				if frames[:front_end]
+					main_css << "/#{zcss}/materialize.min.css"
+				end
+
+				if frames[:front_end]
+					main_js = [
+						"#{zjs}/materialize.min.js",
+						"#{zjs}/vendor/jquery-1.11.2.min.js"
+					]
+				end
+				
+				assets do
+					locations.each do |url,path|
+						serve url, from: path
+					end	
+
+			  		serve "#{zjs}", from: zeeb_js
+			  		serve "#{zcss}", from: zeeb_css
+			  		serve "#{zfont}", from: zeeb_font
+
+			  		
+			  		js :main, main_js
+
+			  		css :zeeb_main, main_css
 
 			  		css_compression :sass
 			  		js_compression  :yui, :munge => true 
