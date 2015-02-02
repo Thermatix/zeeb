@@ -5,8 +5,9 @@ module Zeeb
 
 			#@param [context] takes in class, this is the class that will have modules registered for it
 			def register_components_for context
-				Register.components do |component,method|
-					context.send method,component
+				Register.components do |method,component|
+					puts "registering #{component} with #{method}"
+					context.instance_eval "#{method} #{component}",__FILE__,__LINE__
 				end
 			end
 

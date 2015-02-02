@@ -1,11 +1,11 @@
 module Zeeb
 	class Register
 		class << self
-			attr_accessor :comps, :registerd
+			attr_accessor :comps, :registered
 
 			def this component,kind
 				@components ||= {}
-				@components[component.to_S] = kind
+				@components[kind].push component
 			end
 
 
@@ -14,19 +14,22 @@ module Zeeb
 			end
 
 			def components
-				@components.each do |component,kind|
-					yield [component,kind]
-					@components.delete(component)
-					self.registerd.push component
+				@components.each do |kind,components|
+					components.each do |component|
+						yield(kind,component)
+						self.registered.push component
+					end
+					@components[kind] = []
 				end
 			end
 
 			def non_internal_components hash
 				@components ||= {}
+				
 				@components = @components.merge(hash)
 			end
 		end
 		self.comps = {}
-		self.registerd = []
+		self.registered = []
 	end
 end

@@ -9,9 +9,11 @@ require 'json'
 require 'inline'
 
 
-%w( modules classes base).each do |folder|
-	root = File.dirname(File.realpath(__FILE__))
-	Dir.glob("#{root}/zeeb/#{folder}/*.rb") do |file|
+
+%w( modules patches classes base).each do |folder|
+	root = "#{File.dirname(File.realpath(__FILE__))}/zeeb"
+	require File.expand_path("#{root}/zeeb_info")
+	Dir.glob("#{root}/#{folder}/*.rb") do |file|
 		require file unless file =~ /\_old/
 	end
 end

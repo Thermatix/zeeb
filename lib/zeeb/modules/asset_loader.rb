@@ -36,9 +36,9 @@ module Zeeb
 			  		serve "#{zfont}", from: zeeb_font
 
 			  		
-			  		js :main, main_js
+			  		js :zeeb, main_js
 
-			  		css :zeeb_main, main_css
+			  		css :zeeb, main_css
 
 			  		css_compression :sass
 			  		js_compression  :yui, :munge => true 

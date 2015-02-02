@@ -5,11 +5,10 @@ module Zeeb
 			include Asset_Loader
 			
 			#register app components
-			Register.non_internal_components Hash.new(
-				::Sinatra::FormHelpers => :helpers,
-				::Rack::Utils 		   => :helpers,
-				::Sinatra::AssetPack   => :register
-			)
+			Register.non_internal_components({
+				helpers: ::Zeeb::Info[:helpers],
+				register: ::Zeeb::Info[:exentions]
+			})
 
 			#only do these things after class has been inherited
 			def self.inherited(base)
