@@ -17,6 +17,7 @@ module Zeeb
       end
 
       def []=(level,message)
+        puts self.logger
         case message.class.to_s
           when 'String'
             display message, level

@@ -1,3 +1,4 @@
+require 'pry-byebug'
 module Zeeb
 	module Sinatra_Register
 		#dsl method for registering modules for a particular context
@@ -6,8 +7,8 @@ module Zeeb
 			#@param [context] takes in class, this is the class that will have modules registered for it
 			def register_components_for context
 				Register.components do |method,component|
-					puts "registering #{component} with #{method}"
-					context.instance_eval "#{method} #{component}",__FILE__,__LINE__
+					# binding.pry
+					context.send method,component
 				end
 			end
 
@@ -22,3 +23,4 @@ module Zeeb
 	  	end
 	end
 end
+

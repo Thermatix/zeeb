@@ -16,7 +16,7 @@ module Zeeb
 						::Sinatra::FormHelpers,
 						::Rack::Utils
 						]
-			set :exentions, [
+			set :extensions, [
 						::Sinatra::AssetPack
 					]
 		end

@@ -11,8 +11,8 @@ module Zeeb
 			end
 		end
 
-		def map name, route
-			set_r(get_r.merge({ name => route[:to]}))
+		def map name,route
+			set_r(get_r.merge({ name => [route[:to],(route[:flags]||{})]}))
 		end
 
 		private
