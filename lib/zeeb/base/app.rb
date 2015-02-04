@@ -3,34 +3,34 @@ module Zeeb
 		class App < ::Sinatra::Base
 			include Sinatra_Register
 			include Asset_Loader
-			
-
+			include Delegation
+				
 			#register app components
 			Register.non_internal_components({
 				helpers: ::Zeeb::Info[:helpers],
 				register: ::Zeeb::Info[:extensions]
 			})
+			# delegate_basic_dsl_to self
+
+			[:get, :post, :put, :delete, :head, :options, :patch, :link, :unlink].each do |func_name|
+				define_singleton_method func_name do |*args|
+					puts args.inspect
+					super(*args)
+				end
+			end
 
 			class << self
 
-				#push requests up to sinatra from controllers
-				def get;super; end
-				def put;super; end
-				def post;super; end
-				def delete;super; end
-				def head;super; end
-				def options;super; end
-				def patch;super; end
-				def link;super; end
-				def unlink;super; end
-
-
+				
 				def inherited(subclass)
 					super
 					Controller.set_super(subclass)
 					register_components_for subclass
-					Loader.init subclass
-					Loader.load_files
+					delegate_basic_dsl_to subclass 
+					after_inherited do
+						Loader.init subclass
+						Loader.load_files
+					end
 				end
 
 				def includes_hooks?

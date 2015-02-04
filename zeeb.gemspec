@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "yui-compressor", "0.12.0"
   spec.add_runtime_dependency "RubyInline", "3.12.3"
   spec.add_runtime_dependency "sass","3.2.19"
-  spec.add_runtime_dependency "thin","1.6.3"
+
 
 
   #testing dependencies

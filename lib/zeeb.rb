@@ -8,6 +8,8 @@ require 'yaml'
 require 'json'
 require 'inline'
 
+require 'forwardable'
+
 
 
 %w( modules patches classes base).each do |folder|
@@ -17,6 +19,7 @@ require 'inline'
 		require file unless file =~ /\_old/
 	end
 end
+
 
 
 
