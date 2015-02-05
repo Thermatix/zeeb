@@ -6,11 +6,12 @@ module Zeeb
             include  Covered
             include Delegation
 
-            # [:get, :post, :put, :delete, :head, :options, :patch, :link, :unlink].each do |func_name|
-            #     define_singleton_method func_name do |*args|
-            #         super(*args)
-            #     end
-            # end
+            [:get, :post, :put, :delete, :head, :options, :patch, :link, :unlink].each do |func_name|
+                # alias_method :"old_#func_name" func_name
+                define_singleton_method func_name do |*args|
+                    superclass.send func_name, *args
+                end
+            end
 
             class << self            
                 attr_accessor :app,:current_namespace, :sin
@@ -60,14 +61,15 @@ module Zeeb
                     # self.send @r[:action], @r[:url].first do 
                     #     self.send method, *paramaters
                     # end
-                    
-                    self.instance_eval "
-                        puts '#{@r[:action]} for #{@r[:route]} for #{self}'
-                        #{@r[:action]} \'#{@r[:url].first}\' do 
+                    puts '#{@r[:action]} for #{@r[:route]} for #{self}'
+                    to_eval = "
+                        #{@r[:action]} \'#{@r[:url].first}\', {}, &(lambda {
                             #{method} #{paramaters.join(',') if paramaters} 
-                        end
+                        })
                         
-                    "#,__FILE__,__LINE__
+                    "
+                    puts to_eval
+                    self.instance_eval to_eval
                 end
 
                 def namespace namespace
