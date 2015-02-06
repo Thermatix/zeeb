@@ -10,7 +10,6 @@ module Zeeb
 		module Singleton_methods
 
 			def delegate_basic_dsl_to context
-				puts "delegating basic to #{context} from #{superclass}"
 				context.extend Forwardable
 				context.send :def_delegators, superclass, :get, :post, :put, :delete, :head, :options, :patch, :link, :unlink
 				# SIN_DSL[:basic].each do |func|

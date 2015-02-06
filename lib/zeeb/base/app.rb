@@ -20,6 +20,13 @@ module Zeeb
 				end
 			end
 
+			[:settings,:request].each do |func|
+				define_method func do |*args|
+					super(*args)
+				end
+
+			end
+
 			class << self
 
 				
@@ -28,6 +35,11 @@ module Zeeb
 					Controller.set_super(subclass)
 					register_components_for subclass
 					delegate_basic_dsl_to subclass 
+					subclass.instance_eval do
+						Tilt.register Tilt::ERBTemplate, 'html.erb'	
+						set :root,  Dir.pwd
+						set :views, Proc.new { File.join(root, "views") }
+					end
 					after_inherited do
 						Loader.init subclass
 						Loader.load_files
