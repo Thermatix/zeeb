@@ -8,8 +8,10 @@ module Zeeb
 
             [:get, :post, :put, :delete, :head, :options, :patch, :link, :unlink].each do |func_name|
                 # alias_method :"old_#func_name" func_name
-                define_singleton_method func_name do |*args|
-                    superclass.send func_name, *args
+                define_singleton_method func_name do |*args,&block|
+                    superclass.send func_name, *args do
+                        block.call
+                    end
                 end
             end
 
@@ -58,18 +60,16 @@ module Zeeb
                         end
                     end
 
-                    # self.send @r[:action], @r[:url].first do 
-                    #     self.send method, *paramaters
-                    # end
-                    puts '#{@r[:action]} for #{@r[:route]} for #{self}'
-                    to_eval = "
-                        #{@r[:action]} \'#{@r[:url].first}\', {}, &(lambda {
-                            #{method} #{paramaters.join(',') if paramaters} 
-                        })
-                        
-                    "
-                    puts to_eval
-                    self.instance_eval to_eval
+                    method_string = "#{method} "
+                    method_string +=  paramaters.join(',') if paramaters
+
+                    self.send @r[:action], @r[:url].first, {} do
+                        self.instance_eval "self.new.#{method_string}"
+                    end
+                    
+            
+
+
                 end
 
                 def namespace namespace

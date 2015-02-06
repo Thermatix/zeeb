@@ -13,9 +13,10 @@ module Zeeb
 			# delegate_basic_dsl_to self
 
 			[:get, :post, :put, :delete, :head, :options, :patch, :link, :unlink].each do |func_name|
-				define_singleton_method func_name do |*args|
-					puts args.inspect
-					super(*args)
+				define_singleton_method func_name do |*args,&block|
+					super(*args) do
+                        block.call
+                    end
 				end
 			end
 
