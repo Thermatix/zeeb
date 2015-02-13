@@ -21,7 +21,7 @@ module Zeeb
 			end
 
 			[:settings,:request].each do |func|
-				define_method func do |*args|
+				define_singleton_method func do |*args|
 					super(*args)
 				end
 

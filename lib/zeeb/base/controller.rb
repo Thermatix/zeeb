@@ -15,9 +15,10 @@ module Zeeb
                 end
             end
 
-            def request
-                self.class.superclass.superclass.superclass.request
-            end
+            # def request
+            #     self.request
+            #     # self.class.superclass.superclass.superclass.superclass.superclass.request
+            # end
 
             def settings
                 self.class.superclass.superclass.settings
