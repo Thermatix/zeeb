@@ -5,7 +5,6 @@ namespace :make do
 	gem_name = "#{Zeeb::Info[:name]}-#{Zeeb::Info[:version]}.gem"
 	gem_spec_name = "#{Zeeb::Info[:name]}.gemspec"
 	
-
 	desc 'delete gem file'
 	task listing[0] do
 		system "rm -f #{gem_name}"

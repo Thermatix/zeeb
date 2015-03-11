@@ -5,6 +5,7 @@ module Zeeb
             include Register_Self
             include  Covered
             include Delegation
+            extend Forwardable
 
             [:get, :post, :put, :delete, :head, :options, :patch, :link, :unlink].each do |func_name|
                 # alias_method :"old_#func_name" func_name
@@ -15,42 +16,43 @@ module Zeeb
                 end
             end
 
-            # def request
-            #     self.request
-            #     # self.class.superclass.superclass.superclass.superclass.superclass.request
-            # end
+           def cont
+            ::Zeeb::Base::Controller
+           end
+
+            
 
             def settings
                 self.class.superclass.superclass.settings
             end
 
-            class << self            
-                attr_accessor :app,:current_namespace, :sin
-                
-                               
-                def checking *args
-                    args[0]=check(args.first)
-                    yield(*args)
-                end
+            # def request
+            #     cont.request
+            # end
 
-                def check path
-                    if path.class == Symbol
-                        [
-                            self.current_namespace || '',
-                            Routes.instance_variable_get(:@routes)[path]
-                        ].join
-                    else
-                        path
-                    end
-                end
+            # def response
+            #     cont.response
+            # end
+
+            # def env
+            #     cont.env
+            # end
+                      
+            class << self            
+                attr_accessor :app,:current_namespace, :instance, :routes, :env, :request,:response
 
                 def inherited subclass
-                    #grab a refrence to the sinatra class
-                    self.sin = self.superclass
-                    # subclass.send :def_delagator, self.sin, settings, settings
-                    # delegate_basic_dsl_to subclass
-
+                    subclass.instance = subclass.new
                 end
+
+                # def request
+                #     self.superclass.instance.request
+                # end
+
+
+                # def request= value
+                #     self.superclass.instance.request = value
+                # end
 
 
                 def options hash
@@ -59,14 +61,9 @@ module Zeeb
 
                 def method_added method
                     return if Delegation::SIN_DSL[:basic].include?(method)
-                    r,paramaters = get_r_data method
-                    
-                    method_string = "#{method} "
-                    method_string +=  paramaters.join(',') if paramaters
-
-                    self.send r[:action], r[:url].first, (@options || {}) do
-                        self.new.send method,*paramaters
-                    end
+                    r,p = get_r_data method
+                    m = self.instance.method(method)
+                    self.send r[:action], r[:url].first, (@options || {}), (m.arity < 1 ) ?  m.call : m.call(*p) 
                     @options = nil
             
                 end
@@ -77,7 +74,20 @@ module Zeeb
                     self.current_namespace = nil
                 end
 
+
                 private 
+
+                 def check path
+                    if path.class == Symbol
+                        [
+                            self.current_namespace || '',
+                            Routes.instance_variable_get(:@routes)[path]
+                        ].join
+                    else
+                        path
+                    end
+                end
+
                 def get_r_data method
                     r = {}
                     r[:action],r[:route] = method.to_s.split('_').map { |e| e.to_sym }
@@ -98,7 +108,7 @@ module Zeeb
                 end
 
 			end
-			
+           
     		register_component :controller
 
     		
